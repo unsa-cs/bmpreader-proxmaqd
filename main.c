@@ -12,8 +12,12 @@ void display() {
   glFlush();
 }
 
-int main() {
-  char filename[256];
+int main(int argc , char * argv[] ) {
+  if ( argc != 2 ){
+    printf("comando invalido se necesita el nombre del archivo");
+    return 1; 
+  }
+   char filename[256];
 
   // Pedir al usuario el nombre del archivo BMP
   printf("Ingrese el nombre del archivo BMP (con extensión): ");
