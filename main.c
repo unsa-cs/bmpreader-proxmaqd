@@ -13,16 +13,20 @@ void display() {
   glFlush();
 }
 
-int main(int argc , char *argv[] ) { 
+void convertirabn(BMPImage *image) {
+}
+
+int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
-  if ( argc != 2 ){
-    printf("comando invalido se necesita el nombre del archivo");
-    return 1; 
+
+  if (argc < 2 || argc > 3) {
+    printf("comando invalido\n");
+    return 1;
   }
+
   char filename[256];
-  
   int i = 0;
-  
+
   while(argv[1][i]!='\0' && i < sizeof(filename)-1){
     filename[i]=argv[1][i];
     i++;
@@ -31,7 +35,11 @@ int main(int argc , char *argv[] ) {
 
   image = readBMP(filename);
   if (!image) return 1;
- 
+
+  if (argc == 3 && strcmp(argv[2], "bn") == 0) {
+    convertirabn(image);
+  }
+
   // Establecer el modo de visualización
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
   glutInitWindowSize(image->width, image->height);
@@ -46,3 +54,4 @@ int main(int argc , char *argv[] ) {
   freeBMP(image);
   return 0;
 }
+
