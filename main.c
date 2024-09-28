@@ -12,22 +12,60 @@ void display() {
   glFlush();
 }
 
-int main() {
-  char filename[256];
+void convertirabn(BMPImage *image) {
+  for (int i = 0; i < image->width * image->height * 3; i += 3) {
+    char r = image->data[i];
+    char g = image->data[i + 1];
+    char b = image->data[i + 2];
 
-  // Pedir al usuario el nombre del archivo BMP
-  printf("Ingrese el nombre del archivo BMP (con extensión): ");
-  scanf("%255s", filename);
+    char gray = (r + g + b) / 3;
+
+    image->data[i] = gray;
+    image->data[i + 1] = gray;
+    image->data[i + 2] = gray;
+  }
+}
+
+int main(int argc, char *argv[]) {
+  glutInit(&argc, argv);
+
+  if (argc < 2 || argc > 3) {
+    printf("comando invalido\n");
+    return 1;
+  }
+
+  char filename[256];
+  int i = 0;
+
+  while (argv[1][i] != '\0' && i < sizeof(filename) - 1) {
+    filename[i] = argv[1][i];
+    i++;
+  }
+  filename[i] = '\0';
 
   image = readBMP(filename);
   if (!image) return 1;
 
-  // Inicializar GLUT
-  int argc = 1; // Necesario para evitar problemas con glutInit
-  char *argv[1] = { "" }; // Argumento vacío para GLUT
-  glutInit(&argc, argv);
+  if (argc == 3) {
+    int is_bw = 1;
+    char *bw_id = argv[2];
 
-  // Establecer el modo de visualización
+    char bw_text[] = "bw";
+    for (i = 0; bw_text[i] != '\0' && bw_id[i] != '\0'; i++) {
+      if (bw_text[i] != bw_id[i]) {
+        is_bw = 0; 
+        break;
+      }
+    }
+    if (bw_text[i] != '\0' || bw_id[i] != '\0') {
+      is_bw = 0;
+    }
+
+    if (is_bw) {
+      convertirabn(image);
+    }
+  }
+
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
   glutInitWindowSize(image->width, image->height);
   glutCreateWindow("Visualizador de BMP");
@@ -41,3 +79,4 @@ int main() {
   freeBMP(image);
   return 0;
 }
+
