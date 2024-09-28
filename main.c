@@ -13,6 +13,17 @@ void display() {
 }
 
 void convertirabn(BMPImage *image) {
+  for (int i = 0; i < image->width * image->height * 3; i += 3) {
+    char r = image->data[i];
+    char g = image->data[i + 1];
+    char b = image->data[i + 2];
+
+    char gray = (r + g + b) / 3;
+
+    image->data[i] = gray;
+    image->data[i + 1] = gray;
+    image->data[i + 2] = gray;
+  }
 }
 
 int main(int argc, char *argv[]) {
